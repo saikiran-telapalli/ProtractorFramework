@@ -1,0 +1,143 @@
+********************************************************************
+
+BeforeEach and AfterEach ---> in Jasmine are like BeforeTest and AfterTest annotations in TestNG
+Used for setup and tear down before and after corelogic to that specific test
+********************************************************************
+
+// onPrepare is declared in config file
+
+Its a common global pre-reqisite for all test cases----> we use for
+1.Consider this test for Reports
+2.For non angular app we write the step---->  browser.waitForAngularEnabled(false);
+3.To maximize the browser----> brwoser.driver.manage().window().maximize();
+ sysntax: onPrepare : function(){
+ 						//steps
+					}
+ 
+********************************************************************
+
+// Package.Json
+
+Protractor --> Node Package will be stored in npm repo(Package manager)
+
+From package.json --> we can connect to npm package and download all the dependencies we need
+(same like pom.xml in maven)
+
+----->steps:<------
+
+1.Go to project from cmd/terminal and ---> npm init -f 
+which says initialise the package.json default values refresh the project we see Package.Json
+
+2.How to uninstall Protractor completely  --> npm uninstall -g protractor
+
+3.In package.Json inside the "dependencies': { "protractor" : "^version no."}
+Note: 
+a.Using ^ we say its a latest version not the beta version
+b.All the dependencies will be added in that block
+
+4.To download the dependencies/plugins from package.json hit a command ---> 
+npm install from project level
+
+5. Make the scripts in package.json to run from terminal using commands
+"scripts": {
+		
+		"webdriver-update": "./node_modules/.bin/webdriver-manager update",
+		"webdriver-start": "./node_modules/.bin/webdriver-manager start",
+		"start": "npm run webdriver-update && npm run webdriver-start",
+		"protractor": "./node_modules/.bin/protractor configuration.js"
+		
+	}
+	
+	for update and start localhost server ---> npm run start
+	To execute the test scripts ---> npm run protractor
+	
+********************************************************************
+
+//Data Driven Approach   --->https://www.npmjs.com/package/jasmine-data-provider
+
+1.Add "jasmine-data-provider": "^2.2.0" in the dependencies section of package.json 
+
+2.To download that plugin --> npm install
+
+3.Create a javascript object file with properties values (state & behaviour)/(key & value)
+
+4.To use that data in the test logic, export with the superobject
+
+Like:  module.exports = {
+
+		Datadriver:{
+		
+			firstinput: "2",
+			secondinput: "3",
+			result:"5"
+			}
+		}
+
+5.Require that file in the test file with a variable(importing that function)
+
+6.Using a variable call the object key 
+Like:  "variablename.objectname.state"
+
+6.We "using" function to execute the same test for multiple times as follows
+
+Like: using(objectDataProvider, function (data, description) {
+
+//Note: data: Stores the actual data
+		description: Stores the sub object name
+		objectDataProvider: "variablename.superobject name"
+		
+		For every iteration one data set is picked
+
+				it({
+				//logic steps
+				})
+	
+		}
+7.In the test steps use the ---> "data.subobject_name" --> to pass the data
+
+
+********************************************************************
+
+
+//Reports
+
+Go though the ---> https://www.npmjs.com/package/protractor-jasmine2-html-reporter
+
+In the Package.json add the dependencies ---> protractor-jasmine2-html-reporter
+
+In config file: 
+
+var Jasmine2HtmlReporter = require('protractor-jasmine2-html-reporter');
+
+exports.config = {
+   // ...
+   onPrepare: function() {
+      jasmine.getEnv().addReporter(
+        new Jasmine2HtmlReporter({
+          savePath: 'target/screenshots'
+        })
+      );
+   }
+}
+
+********************************************************************
+
+//Grouping the test cases with "suites"
+
+In config file suites:{
+				smoke: ['test1.js', 'test3.js'],
+				regression: 'test2.js'
+				}
+
+//Note: To run the smoke test--> In package.json make a script of those like start & protractor
+as follows
+
+
+"SmokeTest": "./node_modules/.bin/protractor configuration.js --suite smoke",
+"RegressionTest": "./node_modules/.bin/protractor configuration.js --suite regression"
+
+In cmd/terminal "npm run SmokeTest" to run smote test
+
+********************************************************************
+
+
